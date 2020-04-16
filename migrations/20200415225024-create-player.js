@@ -12,10 +12,12 @@ module.exports = {
         type: Sequelize.STRING
       },
       wins: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        default: 0
       },
       losses: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        default: 0
       },
       pic: {
         type: Sequelize.STRING
