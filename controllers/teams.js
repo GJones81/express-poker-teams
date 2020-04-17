@@ -1,21 +1,77 @@
 let express = require('express')
 let router = express.Router()
 let db = require('../models')
+let sequelize = require('sequelize')
 
 router.get('/', (req, res) => {
-	res.send('Team Page')
-})
-
-router.get('/new', (req, res) => {
-	res.send('New Team Page')
+	db.team.findAll()
+	.then((teams) => {
+	res.render('teams/index', {teams})
+	})
+	.catch((err) => {
+	console.log('Error', err)
+	res.render('error')
+	})	
 })
 
 router.post('/new', (req, res) => {
-	res.send('Posting a New Team')
+	db.team.create(req.body)
+	.then(() => {
+		res.redirect('/teams')
+	})
+	.catch((err) => {
+	console.log('Error', err)
+	res.render('error')
+	})
 })
 
+router.get('/new', (req, res) => {
+	res.render('teams/new')
+})
+
+
+
 router.get('/:id', (req, res) => {
-	res.send('Specific Team Page')
+	db.team.findOne({
+		where:{id: req.params.id },
+		include: [ db.player ]
+	})
+	.then((author) => {
+		res.render('teams/show', {author})
+	})
+	.catch((err) => {
+		console.log('Error', err)
+		res.render('error')
+	})
+	
+})
+
+router.get('/:id/win', (req, res) => {
+	db.player.update(
+		{ wins: sequelize.literal('wins + 1') },
+		{ where: { teamId: req.params.id } }
+	)
+	.then(() => {
+		res.redirect('/teams')
+	})
+	.catch((err) => {
+	console.log('Error', err)
+	res.render('error')
+	})	
+})
+
+router.get('/:id/loss', (req, res) => {
+	db.player.update(
+		{ losses: sequelize.literal('losses + 1') },
+		{ where: { teamId: req.params.id } }
+	)
+	.then(() => {
+			res.redirect('/teams')
+	})
+	.catch((err) => {
+	console.log('Error', err)
+	res.render('error')
+	})	
 })
 
 module.exports = router

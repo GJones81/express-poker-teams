@@ -3,38 +3,48 @@ let router = express.Router()
 let db = require('../models')
 
 router.get('/', (req,res) => {
-	res.send('Players Page')
-	// db.players.findAll()
-	// .then((players) => {
-	// res.render('players/index', {players})
-	// })
-	// .catch((err) => {
-	// console.log('Error', err)
-	// res.render('error')
-	// })	
-})
-
-router.get('/new', (req, res) => {
-	res.send('New Players Page')
-	// res.render('players/new')
+	db.player.findAll()
+	.then((players) => {
+	res.render('players/index', {players})
+	})
+	.catch((err) => {
+	console.log('Error', err)
+	res.render('error')
+	})	
 })
 
 router.post('/new', (req, res) => {
-	res.send('Posting a New Player')
-	// db.players.create(req.body)
-	// .then(() => {
-	// 	res.redirect('/players')
-	// })
-	// .catch((err) => {
-	// console.log('Error', err)
-	// res.render('error')
-	// })
+	db.player.create(req.body)
+	.then(() => {
+	res.redirect('/players')
+	})
+	.catch((err) => {
+	console.log('Error', err)
+	res.render('error')
+	})
+})
+
+router.get('/new', (req, res) => {
+	db.team.findAll()
+	.then((team) => {
+	res.render('players/new', { team })
+	})
+	
 })
 
 router.get('/:id', (req, res) => {
-	res.send('Specific Player Page')
+	db.player.findOne({
+		where:{id: req.params.id },
+		include: [ db.team ]
+	})
+	.then((player) => {
+		res.render('players/show', {player})
+	})
+	.catch((err) => {
+		console.log('Error', err)
+		res.render('error')
+	})
+
 })
-
-
 
 module.exports = router

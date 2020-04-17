@@ -13,11 +13,11 @@ module.exports = {
       },
       wins: {
         type: Sequelize.INTEGER,
-        default: 0
+        defaultValue: 0
       },
       losses: {
         type: Sequelize.INTEGER,
-        default: 0
+        defaultValue: 0
       },
       pic: {
         type: Sequelize.STRING
