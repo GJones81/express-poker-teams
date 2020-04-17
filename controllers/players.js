@@ -47,4 +47,17 @@ router.get('/:id', (req, res) => {
 
 })
 
+router.delete('/:id', (req, res) => {
+	db.player.destroy( {
+		where: {id: req.params.id}
+	})
+	.then(() => {
+		res.redirect('/players')
+	})
+	.catch((err) => {
+		console.log('Error in DELETE router', err)
+		res.render('error')
+	})
+})
+
 module.exports = router
